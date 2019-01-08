@@ -6344,9 +6344,9 @@ _IRQ1V:			cld					; Clear decimal flag
 			pha					; 
 			tya					; and Y
 			pha					; 
-			lda	#$de				; Stack return address to &DE82
+			lda	#>(IRQ_EXIT-1)			; Stack return address to &DE82
 			pha					
-			lda	#$81				
+			lda	#<(IRQ_EXIT-1)				
 			pha					
 			clv					; Clear V flag
 _POLL_ACIA_IRQ:		lda	ACIA_CSR			; Read ACIA status register
@@ -6712,7 +6712,7 @@ _BDE7F:			jmp	_IRQ_UNKNOWN			;
 
 ;************** exit routine *********************************************
 
-			pla					; restore registers
+IRQ_EXIT:		pla					; restore registers
 			tay					; 
 			pla					; 
 			tax					; 
@@ -6836,26 +6836,26 @@ _MSG_COPYSYM:		.byte	")C(",0				; Copyright string match
 
 ;**** COMMMANDS ****
 ;				  Command    Address	   Call goes to
-_OSCLI_TABLE:		.byte	".",$e0,$31,$05			; *.	    &E031, A=5	   FSCV, XY=>String
-			.byte	"FX",$e3,$42,$ff		; *FX	    &E342, A=&FF   Number parameters
-			.byte	"BASIC",$e0,$18,$00		; *BASIC    &E018, A=0	   XY=>String
-			.byte	"CAT",$e0,$31,$05		; *CAT	    &E031, A=5	   FSCV, XY=>String
-			.byte	"CODE",$e3,$48,$88		; *CODE	    &E348, A=&88   OSBYTE &88
-			.byte	"EXEC",$f6,$8d,$00		; *EXEC	    &F68D, A=0	   XY=>String
-			.byte	"HELP",$f0,$b9,$ff		; *HELP	    &F0B9, A=&FF   F2/3=>String
-			.byte	"KEY",$e3,$27,$ff		; *KEY	    &E327, A=&FF   F2/3=>String
-			.byte	"LOAD",$e2,$3c,$00		; *LOAD	    &E23C, A=0	   XY=>String
-			.byte	"LINE",$e6,$59,$01		; *LINE	    &E659, A=1	   USERV, XY=>String
-			.byte	"MOTOR",$e3,$48,$89		; *MOTOR    &E348, A=&89   OSBYTE
-			.byte	"OPT",$e3,$48,$8b		; *OPT	    &E348, A=&8B   OSBYTE
-			.byte	"RUN",$e0,$31,$04		; *RUN	    &E031, A=4	   FSCV, XY=>String
-			.byte	"ROM",$e3,$48,$8d		; *ROM	    &E348, A=&8D   OSBYTE
-			.byte	"SAVE",$e2,$3e,$00		; *SAVE	    &E23E, A=0	   XY=>String
-			.byte	"SPOOL",$e2,$81,$00		; *SPOOL    &E281, A=0	   XY=>String
-			.byte	"TAPE",$e3,$48,$8c		; *TAPE	    &E348, A=&8C   OSBYTE
-			.byte	"TV",$e3,$48,$90		; *TV	    &E348, A=&90   OSBYTE
-			.byte	"",$e0,$31,$03			; Unmatched &E031, A=3	   FSCV, XY=>String
-			.byte	$00				; Table end marker
+_OSCLI_TABLE:		.byte	".",>_OSCLI_FSCV,<_OSCLI_FSCV,$05		; *.	    &E031, A=5	   FSCV, XY=>String
+			.byte	"FX",>_OSCLI_FX,<_OSCLI_FX,$ff			; *FX	    &E342, A=&FF   Number parameters
+			.byte	"BASIC",>_OSCLI_BASIC,<_OSCLI_BASIC,$00		; *BASIC    &E018, A=0	   XY=>String
+			.byte	"CAT",>_OSCLI_FSCV,<_OSCLI_FSCV,$05		; *CAT	    &E031, A=5	   FSCV, XY=>String
+			.byte	"CODE",>_OSCLI_OSBYTE,<_OSCLI_OSBYTE,$88	; *CODE	    &E348, A=&88   OSBYTE &88
+			.byte	"EXEC",>_OSCLI_EXEC,<_OSCLI_EXEC,$00		; *EXEC	    &F68D, A=0	   XY=>String
+			.byte	"HELP",>_OSCLI_HELP,<_OSCLI_HELP,$ff		; *HELP	    &F0B9, A=&FF   F2/3=>String
+			.byte	"KEY",>_OSCLI_KEY,<_OSCLI_KEY,$ff		; *KEY	    &E327, A=&FF   F2/3=>String
+			.byte	"LOAD",>_OSCLI_LOAD,<_OSCLI_LOAD,$00		; *LOAD	    &E23C, A=0	   XY=>String
+			.byte	"LINE",>_OSCLI_USERV,<_OSCLI_USERV,$01		; *LINE	    &E659, A=1	   USERV, XY=>String
+			.byte	"MOTOR",>_OSCLI_OSBYTE,<_OSCLI_OSBYTE, $89	; *MOTOR    &E348, A=&89   OSBYTE
+			.byte	"OPT",>_OSCLI_OSBYTE,<_OSCLI_OSBYTE,$8b		; *OPT	    &E348, A=&8B   OSBYTE
+			.byte	"RUN",>_OSCLI_FSCV,<_OSCLI_FSCV,$04		; *RUN	    &E031, A=4	   FSCV, XY=>String
+			.byte	"ROM",>_OSCLI_OSBYTE,<_OSCLI_OSBYTE,$8d		; *ROM	    &E348, A=&8D   OSBYTE
+			.byte	"SAVE",>_OSCLI_SAVE,<_OSCLI_SAVE,$00		; *SAVE	    &E23E, A=0	   XY=>String
+			.byte	"SPOOL",>_OSCLI_SPOOL,<_OSCLI_SPOOL,$00		; *SPOOL    &E281, A=0	   XY=>String
+			.byte	"TAPE",>_OSCLI_OSBYTE,<_OSCLI_OSBYTE,$8c	; *TAPE	    &E348, A=&8C   OSBYTE
+			.byte	"TV",>_OSCLI_OSBYTE,<_OSCLI_OSBYTE,$90		; *TV	    &E348, A=&90   OSBYTE
+			.byte	"",>_OSCLI_FSCV,<_OSCLI_FSCV,$03		; Unmatched &E031, A=3	   FSCV, XY=>String
+			.byte	$00						; Table end marker
 
 ; Command routines are entered with XY=>command tail, A=table parameter,
 ; &F2/3,&E6=>start of command string
